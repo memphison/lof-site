@@ -84,12 +84,13 @@ section{padding:78px 0}
 .feat p{font-size:.93rem;color:rgba(248,244,233,.82)}
 
 /* pricing */
-.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.tier{border:1.5px solid var(--line);border-radius:16px;padding:26px 22px;background:#fff}
-.tier .size{font-family:"Bricolage Grotesque",sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--haint-deep);font-weight:600}
-.tier .price{font-family:"Bricolage Grotesque",sans-serif;font-size:2rem;font-weight:800;margin:10px 0 2px}
-.tier .per{font-size:.85rem;color:rgba(36,48,41,.65)}
-.pricing-note{margin-top:26px;font-size:.95rem;max-width:40em;color:rgba(36,48,41,.75)}
+.pricing-card{border:1.5px solid var(--line);border-radius:18px;padding:30px 32px;background:#fff;max-width:720px}
+.pricing-kicker{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--haint-deep);font-weight:600;margin-bottom:10px}
+.pricing-price{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:clamp(2rem,4vw,2.75rem);font-weight:800;line-height:1.05;margin-bottom:14px;color:var(--ink)}
+.pricing-price span{font-size:1rem;font-weight:600;color:rgba(36,48,41,.65)}
+.pricing-copy{font-size:1rem;max-width:42em;color:rgba(36,48,41,.8)}
+.pricing-copy + .pricing-copy{margin-top:14px}
+.pricing-note{margin-top:20px;font-size:.95rem;max-width:42em;color:rgba(36,48,41,.72)}
 
 /* founder */
 .founder{border-top:1px solid var(--line)}
@@ -106,7 +107,6 @@ footer a:hover{text-decoration:underline}
   .hero .wrap{grid-template-columns:1fr}
   .phone{margin:12px auto 0}
   .steps,.features{grid-template-columns:1fr}
-  .tiers{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:700px){
   .wrap{padding:0 24px}
@@ -117,7 +117,7 @@ footer a:hover{text-decoration:underline}
   .nav a.navlink{font-size:.92rem}
 }
 @media (max-width:520px){
-  .tiers{grid-template-columns:1fr}
+  .pricing-card{padding:26px 22px}
   .nav nav{gap:22px}
 }
 </style>
@@ -206,15 +206,16 @@ footer a:hover{text-decoration:underline}
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow">Pricing</div>
-      <h2>Flat, simple, sized to your list.</h2>
+      <h2>Simple to start. Built to prove itself.</h2>
     </div>
-    <div class="tiers">
-      <div class="tier"><div class="size">Up to 250 contacts</div><div class="price">$149</div><div class="per">per month</div></div>
-      <div class="tier"><div class="size">Up to 750 contacts</div><div class="price">$249</div><div class="per">per month</div></div>
-      <div class="tier"><div class="size">Up to 1,500 contacts</div><div class="price">$399</div><div class="per">per month</div></div>
-      <div class="tier"><div class="size">Beyond 1,500</div><div class="price">$549</div><div class="per">per month</div></div>
-    </div>
-    <p class="pricing-note">Everything included: setup, table cards, writing, sending, review growth, and the monthly report. Your guest list is yours — always.</p>
+
+    <p class="pricing-lede"><strong>Starting at $199/mo.</strong></p>
+
+    <p class="pricing-note">That includes setup, table cards, guest capture, warm follow-up texts, review growth, the monthly drawing, and a simple report showing who came back.</p>
+
+    <p class="pricing-note">After the first 60 days, we’ll look at the numbers together. If Like Old Friends is bringing people back, we keep going. If it isn’t, we fix it before you wonder why you’re paying for it.</p>
+
+    <p class="pricing-note">Your guest list is yours — always.</p>
   </div>
 </section>
 
