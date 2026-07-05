@@ -128,12 +128,24 @@
   }
   .fork-card p { color: var(--cream-dim); font-size: 15px; }
 
-  .house-note {
-    margin-top: auto;
-    padding-top: 30px;
+  .fork-after {
+    margin-top: 28px;
     text-align: center;
+  }
+  .perk-note {
+    font-size: 16.5px;
+    line-height: 1.5;
+    color: var(--cream);
+    max-width: 34ch;
+    margin: 0 auto;
+  }
+  .perk-note strong { color: var(--gold); }
+  .house-note {
+    margin: 14px auto 0;
+    max-width: 36ch;
     color: var(--cream-dim);
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   /* ---------- screen 2 : the form ---------- */
@@ -237,6 +249,7 @@
     color: var(--cream-dim);
   }
   .consent a { color: var(--gold); }
+  .consent strong { color: var(--gold); font-weight: 700; }
 
   .submit {
     appearance: none;
@@ -296,6 +309,15 @@
     line-height: 1.25;
     text-align: center;
     margin: 18px 0 10px;
+  }
+  .drawing-note {
+    text-align: center;
+    color: var(--gold);
+    font-size: 16px;
+    font-weight: 700;
+    max-width: 30ch;
+    margin: 0 auto 10px;
+    line-height: 1.4;
   }
   .welcome-sub {
     text-align: center;
@@ -423,7 +445,10 @@
       </button>
     </div>
 
-    <p class="house-note">A text or two a month from the house — first pours, quiet-night invites, the occasional thank-you. Never spam. Stop anytime.</p>
+    <div class="fork-after">
+      <p class="perk-note">Every sign-up is an entry in this month&rsquo;s <strong>gift basket drawing</strong> &mdash; and every check-in after earns another.</p>
+      <p class="house-note">A text or two a month from the house &mdash; first pours, quiet-night invites, the occasional thank-you. Never spam. Stop anytime.</p>
+    </div>
   </section>
 
   <!-- ═══ SCREEN 2 · the form ═══ -->
@@ -462,7 +487,7 @@
 
       <div class="consent">
         <input type="checkbox" id="consent" name="consent" required>
-        <p><label for="consent" style="display:inline; font:inherit; letter-spacing:0; text-transform:none; color:inherit; cursor:pointer;">I agree to receive recurring automated marketing text messages (welcome offers, event invites) from 208 Wine Bar via The LOF Club at the number provided. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply HELP for help, STOP to cancel.</label> <a href="https://lofclub.com/terms.html">Terms</a> &middot; <a href="https://lofclub.com/privacy.html">Privacy</a></p>
+        <p><label for="consent" style="display:inline; font:inherit; letter-spacing:0; text-transform:none; color:inherit; cursor:pointer;">I agree to receive recurring automated marketing text messages (your <strong>VIP welcome</strong>, <strong>exclusive invites</strong>, <strong>first pours</strong>) from 208 Wine Bar via The LOF Club at the number provided. Consent is not a condition of purchase. Message frequency varies. Msg &amp; data rates may apply. Reply HELP for help, STOP to cancel.</label> <a href="https://lofclub.com/terms.html">Terms</a> &middot; <a href="https://lofclub.com/privacy.html">Privacy</a></p>
       </div>
       <p class="field-error" id="err-consent" style="margin:-10px 0 14px;">Check the box above so we&rsquo;re allowed to text you.</p>
 
@@ -476,8 +501,9 @@
   <!-- ═══ SCREEN 3 · welcome ═══ -->
   <section class="screen" id="screen-done" aria-label="You're in">
     <div class="welcome-art" aria-hidden="true">&#10045;</div>
-    <h2 class="welcome-head" id="doneHead">You&rsquo;re one of ours now.</h2>
-    <p class="welcome-sub" id="doneSub">Your welcome text is on its way — keep an eye on your phone.</p>
+    <h2 class="welcome-head" id="doneHead">You&rsquo;re one of us now.</h2>
+    <p class="drawing-note" id="drawingNote">You&rsquo;re entered into this month&rsquo;s gift basket drawing.</p>
+    <p class="welcome-sub" id="doneSub">Your welcome text is on its way &mdash; keep an eye on your phone.</p>
 
     <div class="trivia">
       <div class="trivia-eyebrow" id="triviaEyebrow">While the wine breathes</div>
@@ -503,8 +529,10 @@
     name: '208 Wine Bar',
     greetingFirst: 'Welcome in. Two quick things and the house knows your name.',
     greetingRegular: 'Figured as much. Let\u2019s make it official.',
-    doneHeadFirst: 'You\u2019re one of ours now.',
-    doneHeadRegular: 'Officially a regular.'
+    doneHeadFirst: 'You\u2019re one of us now.',
+    doneHeadRegular: 'Officially a regular.',
+    drawingFirst: 'You\u2019re entered into this month\u2019s gift basket drawing.',
+    drawingRegular: 'That\u2019s another entry in this month\u2019s gift basket drawing.'
   };
 
   var state = { visitType: null, local: null };
@@ -628,6 +656,8 @@
       .then(function () {
         document.getElementById('doneHead').textContent =
           state.visitType === 'regular' ? VENUE.doneHeadRegular : VENUE.doneHeadFirst;
+        document.getElementById('drawingNote').textContent =
+          state.visitType === 'regular' ? VENUE.drawingRegular : VENUE.drawingFirst;
         show('done');
       })
       .catch(function () {
