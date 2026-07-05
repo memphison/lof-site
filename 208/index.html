@@ -349,20 +349,36 @@
     transition: border-color 160ms ease, background 160ms ease;
   }
   .trivia-next:active { background: rgba(201, 164, 92, 0.16); }
-  .trivia-reveal {
+  .trivia-back {
+    display: block;
     appearance: none;
     background: none;
     border: none;
-    color: var(--gold);
+    color: var(--cream-dim);
+    font-family: 'Karla', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    padding: 4px 2px;
+  }
+  .trivia-back:active { color: var(--cream); }
+  .trivia-reveal {
+    display: block;
+    appearance: none;
+    background: var(--gold);
+    border: none;
+    border-radius: 999px;
+    color: var(--green-deep);
     font-family: 'Karla', sans-serif;
     font-size: 14px;
     font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    letter-spacing: 0.02em;
+    padding: 10px 20px;
     cursor: pointer;
-    margin-top: 12px;
-    padding: 0;
+    margin-top: 14px;
+    transition: transform 120ms ease;
   }
+  .trivia-reveal:active { transform: scale(0.97); }
   .trivia-credit {
     margin-top: 14px;
     font-size: 12px;
@@ -463,9 +479,10 @@
     <div class="trivia">
       <div class="trivia-eyebrow" id="triviaEyebrow">While the wine breathes</div>
       <p class="trivia-q" id="triviaQ"></p>
-      <button type="button" class="trivia-reveal" id="triviaReveal">Reveal the answer</button>
+      <button type="button" class="trivia-reveal" id="triviaReveal">The Answer</button>
       <p class="trivia-a" id="triviaAnswer"></p>
       <button type="button" class="trivia-next" id="triviaNext">Next question &rarr;</button>
+      <button type="button" class="trivia-back" id="triviaBack">&larr; Back</button>
       <p class="trivia-credit">Curated by 208 Wine Bar and The LOF Club</p>
     </div>
   </section>
@@ -639,34 +656,41 @@
     }
   ];
 
-  var deckIndex = -1;
+  var deckIndex = 0;
   var triviaQ = document.getElementById('triviaQ');
   var triviaA = document.getElementById('triviaAnswer');
   var triviaEyebrow = document.getElementById('triviaEyebrow');
   var revealBtn = document.getElementById('triviaReveal');
 
-  function dealCard() {
-    deckIndex = (deckIndex + 1) % DECK.length;
+  function renderCard() {
     var card = DECK[deckIndex];
     triviaEyebrow.textContent = card.eyebrow;
     triviaQ.textContent = card.q;
     triviaA.classList.remove('show');
     if (card.a) {
       triviaA.textContent = card.a;
-      revealBtn.style.display = 'inline';
+      revealBtn.style.display = 'block';
     } else {
       triviaA.textContent = '';
       revealBtn.style.display = 'none';
     }
   }
-  dealCard();
+  renderCard();
 
   revealBtn.addEventListener('click', function () {
     triviaA.classList.add('show');
     revealBtn.style.display = 'none';
   });
 
-  document.getElementById('triviaNext').addEventListener('click', dealCard);
+  document.getElementById('triviaNext').addEventListener('click', function () {
+    deckIndex = (deckIndex + 1) % DECK.length;
+    renderCard();
+  });
+
+  document.getElementById('triviaBack').addEventListener('click', function () {
+    deckIndex = (deckIndex - 1 + DECK.length) % DECK.length;
+    renderCard();
+  });
 })();
 </script>
 </body>
