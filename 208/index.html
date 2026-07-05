@@ -333,6 +333,22 @@
     display: none;
   }
   .trivia-a.show { display: block; }
+  .trivia-next {
+    display: block;
+    appearance: none;
+    background: none;
+    border: 1.5px solid var(--gold-soft);
+    border-radius: 999px;
+    color: var(--cream);
+    font-family: 'Karla', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 9px 18px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .trivia-next:active { background: rgba(201, 164, 92, 0.16); }
   .trivia-reveal {
     appearance: none;
     background: none;
@@ -420,7 +436,7 @@
           <button type="button" class="toggle-btn" id="btnVisiting" aria-pressed="false">Just visiting</button>
         </div>
         <div id="zipWrap">
-          <label for="zip">Zip code <span class="opt">(optional — helps us plan neighborhood nights)</span></label>
+          <label for="zip">Zip code <span class="opt" id="zipHint">(optional)</span></label>
           <input type="text" id="zip" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="31401">
         </div>
       </div>
@@ -445,10 +461,11 @@
     <p class="welcome-sub" id="doneSub">Your welcome text is on its way — keep an eye on your phone.</p>
 
     <div class="trivia">
-      <div class="trivia-eyebrow">While the wine breathes</div>
-      <p class="trivia-q">Savannah&rsquo;s squares were laid out starting in 1733. How many of the original squares still exist today?</p>
+      <div class="trivia-eyebrow" id="triviaEyebrow">While the wine breathes</div>
+      <p class="trivia-q" id="triviaQ"></p>
       <button type="button" class="trivia-reveal" id="triviaReveal">Reveal the answer</button>
-      <p class="trivia-a" id="triviaAnswer">Twenty-two of the original twenty-four — ask your bartender which two went missing.</p>
+      <p class="trivia-a" id="triviaAnswer"></p>
+      <button type="button" class="trivia-next" id="triviaNext">Next question &rarr;</button>
       <p class="trivia-credit">Curated by 208 Wine Bar and The LOF Club</p>
     </div>
   </section>
@@ -509,7 +526,16 @@
     state.local = isLocal;
     btnLocal.setAttribute('aria-pressed', String(isLocal === true));
     btnVisiting.setAttribute('aria-pressed', String(isLocal === false));
-    zipWrap.classList.toggle('show', isLocal === true);
+    zipWrap.classList.add('show');
+    var hint = document.getElementById('zipHint');
+    var zipEl = document.getElementById('zip');
+    if (isLocal) {
+      hint.textContent = '(optional \u2014 helps us plan neighborhood nights)';
+      zipEl.placeholder = '31401';
+    } else {
+      hint.textContent = '(optional \u2014 your home zip; we love knowing how far friends travel)';
+      zipEl.placeholder = '29401';
+    }
   }
   btnLocal.addEventListener('click', function () { setLocal(true); });
   btnVisiting.addEventListener('click', function () { setLocal(false); });
@@ -563,7 +589,7 @@
       staffName: document.getElementById('staffName').value.trim() || null,
       visitType: state.visitType,
       local: state.local,
-      zip: state.local ? (document.getElementById('zip').value.trim() || null) : null,
+      zip: document.getElementById('zip').value.trim() || null,
       consent: true,
       consentText: document.querySelector('.consent p label').textContent.trim(),
       consentTimestamp: new Date().toISOString(),
@@ -591,11 +617,56 @@
       });
   });
 
-  /* ── trivia reveal ── */
-  document.getElementById('triviaReveal').addEventListener('click', function () {
-    document.getElementById('triviaAnswer').classList.add('show');
-    this.style.display = 'none';
+  /* ── trivia deck ── */
+  var DECK = [
+    {
+      eyebrow: 'While the wine breathes',
+      q: 'Savannah\u2019s squares were laid out starting in 1733. How many of the original squares still exist today?',
+      a: 'Twenty-two of the original twenty-four \u2014 ask your bartender which two went missing.'
+    },
+    {
+      eyebrow: 'For the table',
+      q: 'Go around the table: what\u2019s a small kindness from a total stranger that you still think about?'
+    },
+    {
+      eyebrow: 'While the wine breathes',
+      q: 'Champagne, Chianti, Rioja \u2014 wine regions with famous names. What\u2019s the only U.S. state that grows wine grapes in every one of its counties?',
+      a: 'California is the guess everyone makes \u2014 but no state can claim it. Trick question. The bartender owes you nothing.'
+    },
+    {
+      eyebrow: 'For the table',
+      q: 'Everyone names the one place they\u2019d move to tomorrow, no planning allowed \u2014 then has to defend it in one sentence.'
+    }
+  ];
+
+  var deckIndex = -1;
+  var triviaQ = document.getElementById('triviaQ');
+  var triviaA = document.getElementById('triviaAnswer');
+  var triviaEyebrow = document.getElementById('triviaEyebrow');
+  var revealBtn = document.getElementById('triviaReveal');
+
+  function dealCard() {
+    deckIndex = (deckIndex + 1) % DECK.length;
+    var card = DECK[deckIndex];
+    triviaEyebrow.textContent = card.eyebrow;
+    triviaQ.textContent = card.q;
+    triviaA.classList.remove('show');
+    if (card.a) {
+      triviaA.textContent = card.a;
+      revealBtn.style.display = 'inline';
+    } else {
+      triviaA.textContent = '';
+      revealBtn.style.display = 'none';
+    }
+  }
+  dealCard();
+
+  revealBtn.addEventListener('click', function () {
+    triviaA.classList.add('show');
+    revealBtn.style.display = 'none';
   });
+
+  document.getElementById('triviaNext').addEventListener('click', dealCard);
 })();
 </script>
 </body>
