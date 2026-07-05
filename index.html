@@ -31,10 +31,11 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--haint-deep);outline
 
 /* ---------- header ---------- */
 header{background:var(--oak);color:var(--paper)}
-.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
-.logo{font-weight:800;font-size:1.15rem;letter-spacing:.02em;color:var(--paper);text-decoration:none}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;gap:10px 24px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.15rem;letter-spacing:.02em;color:var(--paper);text-decoration:none;white-space:nowrap}
 .logo span{color:var(--haint)}
-.nav a.navlink{color:var(--haint);text-decoration:none;font-size:.92rem;margin-left:26px;font-family:"Bricolage Grotesque",sans-serif}
+.nav nav{display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+.nav a.navlink{color:var(--haint);text-decoration:none;font-size:.92rem;font-family:"Bricolage Grotesque",sans-serif}
 .nav a.navlink:hover{color:var(--paper)}
 
 /* ---------- hero ---------- */
@@ -107,7 +108,15 @@ footer a:hover{text-decoration:underline}
   .steps,.features{grid-template-columns:1fr}
   .tiers{grid-template-columns:repeat(2,1fr)}
 }
-@media (max-width:520px){.tiers{grid-template-columns:1fr}}
+@media (max-width:520px){
+  .tiers{grid-template-columns:1fr}
+  .wrap{padding:0 20px}
+  .nav{padding:16px 0;gap:8px 18px}
+  .logo{font-size:1.02rem}
+  .logo span{display:none}
+  .nav nav{gap:18px}
+  .nav a.navlink{font-size:.88rem}
+}
 </style>
 </head>
 <body>
