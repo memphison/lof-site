@@ -108,14 +108,17 @@ footer a:hover{text-decoration:underline}
   .steps,.features{grid-template-columns:1fr}
   .tiers{grid-template-columns:repeat(2,1fr)}
 }
+@media (max-width:700px){
+  .wrap{padding:0 24px}
+  .nav{flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px 0 14px;text-align:center}
+  .logo{font-size:1.05rem;white-space:normal}
+  .logo span{display:inline}
+  .nav nav{justify-content:center;gap:28px;width:100%}
+  .nav a.navlink{font-size:.92rem}
+}
 @media (max-width:520px){
   .tiers{grid-template-columns:1fr}
-  .wrap{padding:0 20px}
-  .nav{padding:16px 0;gap:8px 18px}
-  .logo{font-size:1.02rem}
-  .logo span{display:none}
-  .nav nav{gap:18px}
-  .nav a.navlink{font-size:.88rem}
+  .nav nav{gap:22px}
 }
 </style>
 </head>
