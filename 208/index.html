@@ -310,15 +310,6 @@
     text-align: center;
     margin: 18px 0 10px;
   }
-  .drawing-note {
-    text-align: center;
-    color: var(--gold);
-    font-size: 16px;
-    font-weight: 700;
-    max-width: 30ch;
-    margin: 0 auto 10px;
-    line-height: 1.4;
-  }
   .welcome-sub {
     text-align: center;
     color: var(--cream-dim);
@@ -446,7 +437,6 @@
     </div>
 
     <div class="fork-after">
-     
       <p class="house-note">A text or two a month from the house &mdash; first pours, quiet-night invites, the occasional thank-you. Never spam. Stop anytime.</p>
     </div>
   </section>
@@ -530,9 +520,7 @@
     greetingFirst: 'Welcome in. Two quick things and the house knows your name.',
     greetingRegular: 'Figured as much. Let\u2019s make it official.',
     doneHeadFirst: 'You\u2019re one of us now.',
-    doneHeadRegular: 'Officially a regular.',
-    drawingFirst: 'You\u2019re entered into this month\u2019s gift basket drawing.',
-    drawingRegular: 'That\u2019s another entry in this month\u2019s gift basket drawing.'
+    doneHeadRegular: 'Officially a regular.'
   };
 
   var state = { visitType: null, local: null };
@@ -656,8 +644,6 @@
       .then(function () {
         document.getElementById('doneHead').textContent =
           state.visitType === 'regular' ? VENUE.doneHeadRegular : VENUE.doneHeadFirst;
-        document.getElementById('drawingNote').textContent =
-          state.visitType === 'regular' ? VENUE.drawingRegular : VENUE.drawingFirst;
         show('done');
       })
       .catch(function () {
