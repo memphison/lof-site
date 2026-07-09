@@ -585,6 +585,12 @@
     window.scrollTo(0, 0);
   }
 
+/* deep link: #join lands directly on the signup form (vetter/direct access) */
+if (location.hash === '#join') {
+  state.visitType = 'first';
+  show('form');
+}
+  
   /* ── screen 1: fork ── */
   document.querySelectorAll('.fork-card').forEach(function (btn) {
     btn.addEventListener('click', function () {
