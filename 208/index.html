@@ -233,7 +233,7 @@
     border: 1px solid rgba(201, 164, 92, 0.2);
     border-radius: 12px;
     padding: 14px;
-    margin: 6px 0 18px;
+    margin: 6px 0 12px;
   }
   .consent input[type="checkbox"] {
     flex: none;
@@ -250,6 +250,13 @@
   }
   .consent a { color: var(--gold); }
   .consent strong { color: var(--gold); font-weight: 700; }
+
+  .consent-optional-note {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--cream-dim);
+    margin: 0 2px 18px;
+  }
 
   .submit {
     appearance: none;
@@ -438,6 +445,7 @@
 
     <div class="fork-after">
       <p class="house-note">A text or two a month from the house &mdash; first pours, quiet-night invites, the occasional thank-you. Never spam. Stop anytime.</p>
+      <p class="house-note">Joining is completely optional and is never required to dine, order, or make a purchase at 208 Wine Bar.</p>
     </div>
   </section>
 
@@ -454,8 +462,8 @@
 
       <div class="field">
         <label for="phone">Mobile number</label>
-        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="(912) 555-0142" required>
-        <p class="field-error" id="err-phone">That number doesn&rsquo;t look complete — 10 digits, US mobile.</p>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="(912) 555-0142">
+        <p class="field-error" id="err-phone">That number doesn&rsquo;t look complete &mdash; 10 digits, US mobile.</p>
       </div>
 
       <div class="field">
@@ -475,14 +483,23 @@
         </div>
       </div>
 
+      <!-- Checkbox 1 · Terms & Privacy (required to submit the form) -->
       <div class="consent">
-        <input type="checkbox" id="consent" name="consent" required>
-        <p><label for="consent" style="display:inline; font:inherit; letter-spacing:0; text-transform:none; color:inherit; cursor:pointer;">I agree to receive recurring automated marketing text messages (your <strong>VIP welcome</strong>, <strong>exclusive invites</strong>, <strong>first pours</strong>) from Like Old Friends (The LOF Club) on behalf of 208 Wine Bar at the number provided. Consent is not a condition of purchase. Up to 4 msgs/mo. Msg &amp; data rates may apply. Reply HELP for help, STOP to cancel.</label> <a href="https://lofclub.com/terms.html">Terms</a> &middot; <a href="https://lofclub.com/privacy.html">Privacy</a></p>
+        <input type="checkbox" id="terms" name="terms">
+        <p><label for="terms" id="termsLabel" style="display:inline; font:inherit; letter-spacing:0; text-transform:none; color:inherit; cursor:pointer;">I agree to the <a href="https://lofclub.com/terms.html">Terms of Service</a> and <a href="https://lofclub.com/privacy.html">Privacy Policy</a>.</label></p>
       </div>
-      <p class="field-error" id="err-consent" style="margin:-10px 0 14px;">Check the box above so we&rsquo;re allowed to text you.</p>
+      <p class="field-error" id="err-terms" style="margin:-6px 0 12px;">Please agree to the Terms and Privacy Policy to continue.</p>
+
+      <!-- Checkbox 2 · SMS marketing consent (OPTIONAL — form submits without it) -->
+      <div class="consent">
+        <input type="checkbox" id="consent" name="consent">
+        <p><label for="consent" id="smsConsentLabel" style="display:inline; font:inherit; letter-spacing:0; text-transform:none; color:inherit; cursor:pointer;"><strong>Optional:</strong> I agree to receive recurring automated marketing text messages (your <strong>VIP welcome</strong>, <strong>exclusive invites</strong>, <strong>first pours</strong>) from Like Old Friends (The LOF Club) on behalf of 208 Wine Bar at the number provided. Consent is not a condition of any purchase. Up to 4 msgs/mo. Msg &amp; data rates may apply. Reply HELP for help, STOP to cancel.</label></p>
+      </div>
+      <p class="consent-optional-note">This box is optional. Leave it unchecked to skip text messages &mdash; you can still join the guest list, and it never affects your welcome or service at 208 Wine Bar.</p>
+      <p class="field-error" id="err-consent" style="margin:-10px 0 14px;">To receive texts, check the consent box above &mdash; or leave both the box and the phone number blank to skip texts.</p>
 
       <button type="submit" class="submit" id="submitBtn">Count me in</button>
-      <p class="form-error" id="formError">Something hiccuped on our end — give it one more try.</p>
+      <p class="form-error" id="formError">Something hiccuped on our end &mdash; give it one more try.</p>
     </form>
 
     <button type="button" class="back-link" id="backLink">&larr; Back</button>
@@ -605,13 +622,31 @@
     e.preventDefault();
 
     var name = document.getElementById('firstName').value.trim();
+    var phoneRaw = phoneInput.value.replace(/\D/g, '');
     var e164 = phoneE164();
-    var consent = document.getElementById('consent').checked;
+    var termsAgreed = document.getElementById('terms').checked;
+    var smsConsent = document.getElementById('consent').checked;
 
-    flagError('firstName', !name);
-    flagError('phone', !e164);
-    flagError('consent', !consent);
-    if (!name || !e164 || !consent) return;
+    /*
+      Validation rules (TCPA / A2P 10DLC — forced-consent fix):
+      - Name and Terms agreement are required to submit the form.
+      - SMS consent checkbox is OPTIONAL. Declining it never blocks submission.
+      - Phone number is required ONLY when SMS consent is checked
+        (we cannot text without a number). If SMS consent is declined,
+        the phone field may be left blank; if partially filled, it must
+        still be a valid 10-digit number.
+      - If a phone number is provided but the box is unchecked, we store
+        the number with consent=false and NEVER send messages to it.
+    */
+    var nameBad = !name;
+    var termsBad = !termsAgreed;
+    var phoneBad = smsConsent ? !e164 : (phoneRaw.length > 0 && !e164);
+
+    flagError('firstName', nameBad);
+    flagError('terms', termsBad);
+    flagError('phone', phoneBad);
+    flagError('consent', false);
+    if (nameBad || termsBad || phoneBad) return;
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'One second\u2026';
@@ -621,13 +656,15 @@
       venueId: VENUE.id,
       venueName: VENUE.name,
       firstName: name,
-      phone: e164,
+      phone: e164 || null,
       staffName: document.getElementById('staffName').value.trim() || null,
       visitType: state.visitType,
       local: state.local,
       zip: document.getElementById('zip').value.trim() || null,
-      consent: true,
-      consentText: document.querySelector('.consent p label').textContent.trim(),
+      termsAgreed: true,
+      termsText: document.getElementById('termsLabel').textContent.trim(),
+      smsConsent: smsConsent,
+      consentText: smsConsent ? document.getElementById('smsConsentLabel').textContent.trim() : null,
       consentTimestamp: new Date().toISOString(),
       page: location.href
     };
@@ -644,6 +681,9 @@
       .then(function () {
         document.getElementById('doneHead').textContent =
           state.visitType === 'regular' ? VENUE.doneHeadRegular : VENUE.doneHeadFirst;
+        document.getElementById('doneSub').textContent = smsConsent
+          ? 'Your welcome text is on its way \u2014 keep an eye on your phone.'
+          : 'You\u2019re on the guest list \u2014 no texts unless you ever ask for them. Enjoy the evening.';
         show('done');
       })
       .catch(function () {
